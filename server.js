@@ -17,7 +17,7 @@ mongoose.connect(db_url, {
     process.exit();
 });
 
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
     res.send("Hey there!");
