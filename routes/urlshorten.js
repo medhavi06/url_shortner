@@ -1,5 +1,25 @@
 const mongoose = require("mongoose");
 const UrlShorten = require('../models/UrlShorten');
+var redis = require('redis');
+var client = redis.createClient();
+
+exports.findUrl = (req,res) => {
+    client.exists('shortUrlCode', function(err, reply) {
+        if (reply === 1) {
+            console.log('exists in redis');
+        } else {
+            console.log('doesn\'t exist in redis');
+            UrlShorten.findOne({ urlCode: req.params.shortUrlCode }, function(err, user) {
+                if (err) throw err;
+                res.send(user);
+                console.log(user);
+                client.set(user.urlCode, user.originalUrl);
+                console.log(user.originalUrl);
+            });
+
+        }
+    });
+};
 
 exports.findOne = (req, res) => {
     UrlShorten.findById(req.params.noteId)
@@ -10,6 +30,9 @@ exports.findOne = (req, res) => {
             });            
         }
         res.send(note);
+        //res.redirect(note.shortUrl);
+        //console.log(note.shortUrl);
+        //res.redirect('http://gmail.com');
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
@@ -38,11 +61,13 @@ exports.create = (req, res) => {
     const code = d.getTime();    
     const short_url = "http://shortened.com/" + code;  
     console.log(short_url);
+    console.log(req.body.originalUrl);
     const note = new UrlShorten({
         originalUrl: req.body.originalUrl,
         urlCode: code,
         shortUrl: short_url
     });    
+    console.log(note);
     note.save()
     .then(data => {
         res.send(data);
