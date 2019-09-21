@@ -1,22 +1,32 @@
-const mongoose = require("mongoose");
 const UrlShorten = require('../models/UrlShorten');
 var redis = require('redis');
 var client = redis.createClient();
 
 exports.findUrl = (req,res) => {
-    client.exists('shortUrlCode', function(err, reply) {
+    client.exists(req.params.shortUrlCode, function(err, reply) {
         if (reply === 1) {
-            console.log('exists in redis');
+            console.log('Present in redis');
+            client.get(req.params.shortUrlCode, function(err, reply) {
+                console.log(reply);
+                res.send(reply);
+            });
         } else {
-            console.log('doesn\'t exist in redis');
+            console.log('Not present in redis');
             UrlShorten.findOne({ urlCode: req.params.shortUrlCode }, function(err, user) {
                 if (err) throw err;
+                if(!user) {
+                    return res.status(404).send({
+                        message: "Not found for the shortUrl : " + req.params.shortUrlCode
+                    });            
+                }                
                 res.send(user);
                 console.log(user);
-                client.set(user.urlCode, user.originalUrl);
+                client.set(user.urlCode, user.originalUrl, function(err1,reply){
+                    if (err1) throw err1;
+                    console.log(reply);
+                });
                 console.log(user.originalUrl);
             });
-
         }
     });
 };
