@@ -1,8 +1,8 @@
 module.exports = (app) => {
-    const notes = require('../routes/urlshorten.js');
+    const notes = require('../routes/urlShorten.js');
 
-    app.post('/api/item', notes.create);
-    app.get('/api/item/:noteId', notes.findOne);
-    app.get('/api/items', notes.findAll);
-    app.get('/api/:shortUrlCode', notes.findUrl);
+    app.post('/url', notes.create);
+    app.get('/url/:noteId', notes.findOne);
+    app.get('/urls', notes.findAll);
+    app.get('/:shortUrlCode', notes.findUrl);
 }

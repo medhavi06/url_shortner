@@ -1,4 +1,4 @@
-const UrlShorten = require('../models/UrlShorten');
+const UrlShorten = require('../models/schemaUrl');
 var redis = require('redis');
 var client = redis.createClient();
 
