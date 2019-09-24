@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-require('dotenv').config();
+//require('dotenv').config();
+const config = require('./config/config');
+('../config/config');
 const PORT = 3000;
 var redis = require('redis');
 var client = redis.createClient();
@@ -11,13 +13,13 @@ client.on('connect', function() {
     console.log('connected');
 });
 
-app.set('port', process.env.PORT || 4100);
+app.set('port', config.server.PORT || 4100);
 
 app.listen(PORT, () => {
     console.log(`Server started on port`, PORT);
 });
 
-const db_url = process.env.DATABASE;
+const db_url = config.mongoDB.URL;
 
 mongoose.connect(db_url, {
     useNewUrlParser: true

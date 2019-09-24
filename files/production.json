@@ -1,0 +1,8 @@
+{
+  "server" : {
+    "PORT": 3000
+  },
+  "mongoDB": {
+    "URL" : "mongodb+srv://medhavigupta26:mongodb@cluster0-h3jmt.mongodb.net/url?retryWrites=true&w=majority"
+  }
+}
