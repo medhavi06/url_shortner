@@ -4,5 +4,5 @@ module.exports = (app) => {
     app.post('/url', notes.create);
     app.get('/url/:noteId', notes.findOne);
     app.get('/urls', notes.findAll);
-    app.get('/:shortUrlCode', notes.findUrl);
+    app.get('/:urlCode', notes.findUrl);
 }
