@@ -2,11 +2,24 @@ const express = require("express");
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-require('dotenv').config();
+//require('dotenv').config();
+const config = require('./config/config');
+('../config/config');
 const PORT = 3000;
+var redis = require('redis');
+var client = redis.createClient();
 
-app.set('port', process.env.PORT || 4100);
-const db_url = process.env.DATABASE;
+client.on('connect', function() {
+    console.log('connected');
+});
+
+app.set('port', config.server.PORT || 4100);
+
+app.listen(PORT, () => {
+    console.log(`Server started on port`, PORT);
+});
+
+const db_url = config.mongoDB.URL;
 
 mongoose.connect(db_url, {
     useNewUrlParser: true
@@ -23,9 +36,4 @@ app.get("/", (req, res) => {
     res.send("Hey there!");
 });
 
-//require('./models/UrlShorten');
 require('./routes/routes')(app);
-
-app.listen(PORT, () => {
-    console.log(`Server started on port`, PORT);
-});
